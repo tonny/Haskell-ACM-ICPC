@@ -41,13 +41,3 @@ convert  num | num > 0 = roman 0 num
              roman p n | n >= snd (roma !! p) = fst (roma !! p) ++ roman p (n - snd(roma!!p))
                        | otherwise = roman (p+1) n
 
-
-{--
-convert :: Integer -> String 
-convert  num | num > 0 = roman 0 num
-             | otherwise = "ERROR" 
-           where 
-             roman _ 0 = ""
-             roman p n | n >= entero !! p = romano !! p ++ roman p (n-entero!!p)
-                       | otherwise = roman (p+1) n
---}
