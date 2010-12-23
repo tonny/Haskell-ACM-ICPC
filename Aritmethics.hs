@@ -24,8 +24,8 @@ resolv exp = let (first,resto)   = span isDigit exp
 			    | otherwise = "error"
              
 	     printMul :: Integer -> Integer -> String -> String -> Int -> Int -> String
-             printMul _ _ _ _ 0 _   = ""
-             printMul n1 n2 f s c t = let esp = if t > (length (f++s)) then 1 else 0
+         printMul _ _ _ _ 0 _   = ""
+         printMul n1 n2 f s c t = let esp = if t > (length (f++s)) then 1 else 0
 	                              in if n1>n2 then space (t-(length f)+esp)++show n1++"\n"
 				         ++space(t-(length s)-1+esp)++"*"++show n2++"\n"++map(\x->'-')[0..t]
 					 ++"\n"++resto n1 s (length s)++map(\x->'-')[0..t]++"\n"++show (n1*n2) 

@@ -1,12 +1,13 @@
 ===============================================================================
 =                                 \   \   \                                   =  
 =                                 /\  /\  /\                                  =
+=                                   to_On1                                    =
 ===============================================================================
-
- Author      : Antonio Mamani 
+                                    
+ Author      : Antonio 
  Email       : antonio.mq@gmail.com
- Description : This solution on these exercises of ACM, is to raise the level
-               of programming in Haskell
+ Description : This solution on these exercises of ACM-ICPC, is to raise the
+               level of programming in Haskell
 
 ===============================================================================
        

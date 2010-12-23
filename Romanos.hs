@@ -1,28 +1,67 @@
-module Romano where
-{-
- - Author: Antonio Mamani
- - Problem : Convert an Integer to a roman numerical
- - version : 24022010
- - -}
-convertir :: Int -> String
-convertir num | num > 0 && num < 10 = numeros !! num  
-              | num > 5000       = "Numero fuera de Rango"
-              | num-10 < 30      = diez num
-	      | num-50 < 40      = if num-50 < 0 then "XL"++ numeros!!(num `mod` 10) else cincuenta num
-              | num-100 < 300    = if num-100 < 0 then "XC"++ numeros!!(num `mod` 10) else cien num
-	      | num-500 < 400    = if num-500 < 0 then "CD"++ convertir (num `mod` 100) else quinientos num  
-	      | num-1000 < 99899 = if num-1000 < 0 then "CM"++convertir (num `mod` 100) else mil num 
-	      | otherwise = "Numero fuera de rango"
-	      where
-              diez n = concat (map (\x->"X") [1..(n `div` 10)]) ++ numeros!!(n `mod` 10) 
+module Main where
 
-              cincuenta n = "L" ++ diez(n-50)
+{--
+Problem : Roman Calculator
+--}
 
-              cien n = concat (map (\x->"C") [1..(n `div` 100)]) ++ convertir (n `mod` 100) 
+main :: IO ()
+main = calculator . lines =<< getContents
 
-              quinientos n = "D" ++ convertir (n-500)
+calculator :: [String] -> IO ()
+calculator (_:xs) = mapM_ (putStrLn . result . words) xs
+ 
+result :: [String] -> String
+result (x:sop:y:_) = toRoman ((fromRoman x) `op` (fromRoman y))
+ where op = maybe (\x y -> 0) id (lookup sop ops)
 
-              mil n = concat(map (\x->"M") [1..(n `div` 1000)]) ++ convertir (n `mod` 1000) 
+ops    = [("+",(+)),("-",(-)),("*",(*)),(":",div),("%",mod)]
 
-numeros = ["","I","II","III","IV","V","VI","VII","VIII","IX"]
+fromRoman :: String -> Int
+fromRoman [] = 0
+fromRoman (l:ls) = number + fromRoman rest
+ where (number,rest) = convertToNumber l ls
 
+convertToNumber l ls
+ | l == 'C' = case ls of
+                ('M':ys) -> (900, ys)
+                ('D':ys) -> (400, ys)
+                _        -> (100, ls)
+ | l == 'X' = case ls of
+                ('C':ys) -> (90 , ys)
+                ('L':ys) -> (40 , ys)
+                _        -> (10 , ls)
+ | l == 'I' = case ls of
+                ('X':ys) -> (9  , ys)
+                ('V':ys) -> (4  , ys)
+                _        -> (1  , ls)
+ | l == 'M' = (1000, ls)
+ | l == 'D' = (500 , ls)
+ | l == 'L' = (50  , ls)
+ | l == 'V' = (5   , ls)
+
+toRoman :: Int -> String
+toRoman n | n > 0     = toRoman' n
+         | n < 0     = '-' : (toRoman' (abs n))
+         | otherwise = "ERROR"
+
+toRoman' 0 = ""
+toRoman' num1000 = letters1000 ++ letters100 ++ letters10 ++ letters1
+ where letters1000   = take (num1000 `div` 1000) (repeat  'M')
+
+       num100        = num1000 `mod` 1000
+       letters100    = getUnit (num100 `div` 100) (units 'C' 'D' 'M')
+
+       num10         = num100  `mod` 100
+       letters10     = getUnit (num10 `div` 10)   (units 'X' 'L' 'C')
+
+       num1          = num10   `mod` 10
+       letters1      = getUnit num1               (units 'I' 'V' 'X')
+
+getUnit 0 _  = ""
+getUnit n us = us !! (n-1)
+units u h t = [u1, u2, u3, u:h1, h1, h:u1, h:u2, h:u3, u:t1]
+ where u1 = u:[]
+       u2 = u:u1
+       u3 = u:u2
+       h1 = h:[]
+       t1 = t:[]
